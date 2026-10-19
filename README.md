@@ -91,8 +91,8 @@ O protótipo é front-end e mantém os dados em memória usando mocks. As telas 
 - **APK de avaliação local:** [app-debug.apk](android/app/build/outputs/apk/debug/app-debug.apk)
 - **Download público:** [APK v1.0.0](https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-/releases/download/v1.0.0/Motiva-Greencut-1.0.0.apk) · [página da Release](https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-/releases/tag/v1.0.0)
 - **Tipo:** APK debug, assinado pela chave de desenvolvimento do Android. Instalável para avaliação, mas não assinado para distribuição na Play Store.
-- **Vídeo no YouTube (não listado):** pendente de gravação real pelo grupo. Usar o roteiro em `docs/ROTEIRO_PITCH.md` e incluir o link depois da publicação.
-- **Arquivo de submissão:** `ENTREGA_FINAL.txt`; substituir os três campos `PREENCHER` antes do envio.
+- **Vídeo no YouTube (não listado):** pendente de gravação real pelos integrantes; inserir o link no arquivo de submissão após publicar.
+- **Arquivo de submissão:** `ENTREGA_FINAL.txt`; falta preencher apenas o link do vídeo não listado.
 
 ## 💼 Plano de negócio — resumo
 
@@ -183,7 +183,7 @@ Os seis fluxos principais abaixo foram validados manualmente no ambiente local c
 
 1. APK Android gerado com Capacitor e validado por instalação e abertura em AVD Android 36.1.
 2. Plano de negócio contextualizado à operação rodoviária, com premissas identificadas como estimativas.
-3. Roteiro de pitch com participação dos quatro integrantes; vídeo real permanece a cargo do grupo.
+3. Vídeo de pitch com participação dos quatro integrantes permanece pendente de gravação e publicação.
 4. README consolidado e `.txt` de submissão preparado; falta publicar e inserir o link do vídeo.
 
 ---
