@@ -8,7 +8,7 @@ Repositório GitHub final com README consolidado
 https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-
 
 APK para download
-PREENCHER COM LINK PÚBLICO DO APK (GitHub Releases, Google Drive ou similar)
+https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-/releases/download/untagged-f8b5bba7b5e8ff91f32b/Motiva-Greencut-1.0.0.apk
 
 Vídeo de pitch no YouTube (não listado)
 PREENCHER COM O LINK DO VÍDEO PUBLICADO
