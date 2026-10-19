@@ -1,15 +1,20 @@
 {
-  "name": "@figma/my-make-file",
+  "name": "motiva-greencut",
   "private": true,
-  "version": "0.4.1",
+  "version": "1.0.0",
+  "packageManager": "pnpm@11.6.0",
   "type": "module",
   "scripts": {
     "build": "vite build",
     "dev": "vite --host 0.0.0.0",
     "web": "vite --host 0.0.0.0",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "android:sync": "pnpm build && cap sync android",
+    "android:apk": "node scripts/build-android.mjs"
   },
   "dependencies": {
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/core": "^7.6.9",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
     "@mui/icons-material": "7.3.5",
@@ -70,6 +75,7 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.6.9",
     "@tailwindcss/vite": "4.1.12",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

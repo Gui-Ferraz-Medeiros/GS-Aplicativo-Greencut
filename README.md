@@ -1,6 +1,6 @@
-# 🌿 Greencut — Sprint 3 (Protótipo Funcional Completo)
+# 🌿 Motiva Greencut — Entrega Final (Sprint 4)
 
-> Status atual: protótipo funcional de front-end com dados mockados, navegável e consistente visualmente. Ainda não há backend real, autenticação real nem integração com IoT/API externa.
+> App Android de avaliação gerado e instalado em emulador. Os dados ainda são mockados: não há autenticação de produção, backend, persistência nem integração real com sensores.
 
 ---
 
@@ -12,8 +12,17 @@
 
 ---
 
-## 🎯 Objetivo da Sprint 3
-Entregar uma aplicação funcional com os fluxos principais e secundários navegáveis, mantendo a identidade visual GreenCut e usando mocks quando a integração real ainda não existe.
+## 🎯 Solução
+O Motiva Greencut organiza a priorização de roçada por rodovia e trecho. O gestor acompanha os status dos sensores, recomendações, alertas e relatórios; o operador consulta tarefas e registra as alturas antes e depois do serviço. A visão de produto prevê sensores IoT e conectividade LoRa, mas o protótipo apresentado usa dados simulados e não deve ser interpretado como telemetria real.
+
+## 🧭 Entregas por Sprint
+
+| Sprint | Entrega |
+|---|---|
+| Sprint 1 | Definição do problema de conservação rodoviária, proposta Greencut, personas de gestão/campo, requisitos funcionais e protótipo navegável no Figma. |
+| Sprint 2 | Implementação do protótipo web/mobile com React, fluxo de gestão e operação, priorização de trechos e dados simulados; commits `a842b9a` e `467d7e5` registram essa evolução. |
+| Sprint 3 | Protótipo web com perfis gestor/operador, seleção de rodovia, sensores e status, detalhe e alertas, relatório, tarefas e dados mockados. Estados vazios/erro e rotas foram concluídos na revisão pós-feedback. |
+| Sprint 4 | Empacotamento Android via Capacitor, APK debug instalado e aberto no AVD, plano de negócio preliminar, roteiro de pitch e arquivo `.txt` de submissão criado. |
 
 ---
 
@@ -23,6 +32,7 @@ Entregar uma aplicação funcional com os fluxos principais e secundários naveg
 |---|---|---|
 | Login com perfil Gestor/Operador | Concluído | Autenticação simulada, sem backend real |
 | Tela de abertura / welcome screen | Concluído | Animação premium de boas-vindas antes do login |
+| Navegação por rotas | Concluído | React Router com URLs e histórico do browser |
 | Seleção de rodovia | Concluído | Mapa visual + lista de rodovias |
 | Dashboard do gestor | Concluído | Cards e mapa de sensores |
 | Detalhes do sensor | Concluído | Altura, histórico, estimativa e ações |
@@ -31,49 +41,79 @@ Entregar uma aplicação funcional com os fluxos principais e secundários naveg
 | Execução de roçada/relato de campo | Concluído | Altura antes/depois e levantamento de campo |
 | Relatório de priorização | Concluído | Resumo, ocorrências e intervenções |
 | Dados mockados | Concluído | Cobertura realista para protótipo |
-| Estados de erro e vazio | Parcial | Há cenários de vazio, mas sem validação automatizada |
+| APK Android | Gerado e testado no emulador | Build debug assinada com chave de desenvolvimento; não é release de loja |
+| Plano de negócio | Elaborado | Premissas de piloto e faixas de custo precisam ser validadas com a Motiva e fornecedores |
+| Vídeo de pitch | Pendente | Gravação deve mostrar os integrantes e o app no dispositivo; roteiro em `docs/ROTEIRO_PITCH.md` |
+| Estados de erro e vazio | Implementado | Listas vazias têm mensagens próprias; erros de renderização permitem recarregar a aplicação |
 | Refinamento de UX visual | Concluído | Personalização da identidade visual, microinterações e melhor onboarding |
 | Integração com APIs reais | Ausente | Ainda não existe backend ou integração externa |
 | Autenticação real | Ausente | Necessária para Sprint 4 |
 | Persistência real | Ausente | Estado local apenas |
-| Vídeo de apresentação | Ausente | Requer gravação e publicação |
-| Arquivo final .txt de entrega | Pendente | Requer dados finais e link do vídeo |
 
 ---
 
-## 🧱 Arquitetura atual
+## 🧱 Arquitetura da aplicação
 
 ### Stack principal
 - React + TypeScript
 - Vite
 - Tailwind CSS
-- Radix UI
+- React Router
+- Capacitor 7 / Android Gradle
 - Lucide React
 - motion
 - Sonner
 
 ### Estrutura do projeto
-- src/main.tsx — entrada da aplicação
-- src/app/App.tsx — lógica global, navegação e estados
-- src/app/components — telas do protótipo
+- src/main.tsx — entrada, roteador do browser e boundary global de erro
+- src/app/App.tsx — estado compartilhado e definição das rotas
+- src/app/components — telas e componentes próprios do produto
+- src/app/components/AppErrorBoundary.tsx — recuperação de falhas de renderização
 - src/mocks/mockData.ts — dados simulados
-- src/app/components/ui — biblioteca visual reutilizável
+- capacitor.config.json e android/ — ponte Capacitor e projeto nativo
+- docs/PLANO_DE_NEGOCIO.md — plano, personas, custos, riscos e indicadores
+- docs/ROTEIRO_PITCH.md — pauta de vídeo de até 5 minutos
+- ENTREGA_FINAL.txt — nomes/RMs e campos dos três links exigidos
 
-### Arquitetura observada
-A aplicação é um protótipo front-end com estado local em memória. Não há backend, API real, banco de dados ou conexão com sensores IoT reais. A navegação é feita por mudança de estado e não por rotas de browser.
+O protótipo é front-end e mantém os dados em memória usando mocks. As telas principais usam rotas de browser: `/highways`, `/highways/:highwayId`, `/highways/:highwayId/report`, `/sensors/:sensorId`, `/operator/tasks` e `/operator/tasks/:sensorId`. Ainda não há backend, persistência ou conexão real com sensores IoT.
 
 ### Atualizações recentes implementadas
 - Inclusão de animação de abertura com visual premium e transição suave para a tela de login
 - Ajuste de onboarding para tornar a experiência inicial mais profissional e envolvente
 - Refinamento visual de identidade da marca GreenCut e dos elementos de destaque
 - Melhor organização da lógica de prioridade para alertas críticos e atenção
-- Manutenção do fluxo principal do gestor e do operador em estado funcional e navegável
+- Rotas de browser para os fluxos do gestor e do operador
+- Estados vazios no dashboard e no relatório, além de boundary para erros de renderização
+- Remoção dos componentes UI exportados pelo template que não eram utilizados
+- Empacotamento Android com Capacitor e teste de instalação/abertura em emulador
+
+## 📦 APK e publicação
+
+- **APK de avaliação local:** [app-debug.apk](android/app/build/outputs/apk/debug/app-debug.apk)
+- **Download público:** ainda não publicado. Após revisão, publicar em GitHub Releases, Drive ou serviço equivalente e substituir este aviso pelo link público.
+- **Tipo:** APK debug, assinado pela chave de desenvolvimento do Android. Instalável para avaliação, mas não assinado para distribuição na Play Store.
+- **Vídeo no YouTube (não listado):** pendente de gravação real pelo grupo. Usar o roteiro em `docs/ROTEIRO_PITCH.md` e incluir o link depois da publicação.
+- **Arquivo de submissão:** `ENTREGA_FINAL.txt`; substituir os três campos `PREENCHER` antes do envio.
+
+## 💼 Plano de negócio — resumo
+
+**Proposta de valor:** priorizar a roçada por trecho a partir de medições de vegetação, registrar execução e facilitar o acompanhamento operacional. O app atual é um protótipo com mocks; a medição IoT e a economia projetada ainda precisam ser validadas.
+
+**Clientes e usuários:** concessionária/área de conservação como compradora; gestores rodoviários, supervisores de operação e operadores de campo como usuários. Tecnologia, segurança, suprimentos e prestadores de serviço participam da implantação.
+
+**Receita proposta:** implantação e treinamento pagos, seguidos de serviço gerenciado anual cobrado por quilômetro monitorado e densidade de sensores, com integrações e SLA opcionais.
+
+**Hipótese financeira:** piloto de 100 km e cerca de 50 pontos. Implantação estimada em R$ 94,5 mil–174 mil; operação em R$ 14 mil–27 mil/mês. Faixa de preço para teste: R$ 22 mil–36 mil/mês, além da implantação. São hipóteses de planejamento, não cotações nem proposta aprovada; o arquivo do plano detalha premissas, riscos e fórmula de ROI.
+
+**Diferenciais e impacto a medir:** priorização por severidade, fluxo do alerta à tarefa e registro de alturas antes/depois. Medir custo por km, proporção de roçadas reativas, tempo de atendimento, disponibilidade e falsos alertas. Não há redução de custo ou impacto de segurança já comprovados.
+
+Plano completo: [docs/PLANO_DE_NEGOCIO.md](docs/PLANO_DE_NEGOCIO.md).
 
 ---
 
 ## 🧪 Testes manuais principais
 
-Os testes abaixo foram validados manualmente no ambiente de execução local com Vite.
+Os seis fluxos principais abaixo foram validados manualmente no ambiente local com Vite.
 
 ### 1) Login como gestor
 - Cenário: preencher usuário e senha e entrar como gestor
@@ -111,35 +151,51 @@ Os testes abaixo foram validados manualmente no ambiente de execução local com
 - Resultado obtido: notificação apareceu corretamente
 - Status: passou
 
+### Verificações adicionais dos estados de erro e vazio
+
+### Estado vazio de sensores
+- Cenário: abrir uma rodovia sem sensores disponíveis
+- Resultado esperado: dashboard informa a ausência de sensores e não apresenta a rodovia como normal
+- Status: implementação concluída; validar manualmente com uma lista vazia
+
+### 8) Recuperação de erro de renderização
+- Cenário: ocorrer uma falha durante a renderização de uma tela
+- Resultado esperado: exibir mensagem de erro e permitir recarregar a aplicação
+- Status: implementação concluída; validar manualmente
+
+### Navegação por rotas
+- Cenário: autenticar, selecionar rodovia, abrir sensor e relatório e usar voltar do navegador
+- Resultado esperado: URL acompanha cada tela e o histórico retorna à tela anterior
+- Resultado obtido: fluxo do gestor validado em `/highways`, `/highways/riosp`, `/sensors/s7` e `/highways/riosp/report`
+- Status: passou
+
 ---
 
-## ⚠️ Pendências identificadas
-- Backend/API real ausente
-- Integração com ESP32/LoRa não implementada
-- Persistência de dados não existente
-- Testes automatizados ainda não desenvolvidos
-- README e documentação final precisam ser revisados para adequação à entrega oficial
-- Vídeo de apresentação ainda pendente
-- Arquivo .txt final ainda precisa ser gerado com dados definitivos
+## ⚠️ Pendências para publicação
 
----
+- APK público ainda precisa ser publicado; o APK local é debug e usa assinatura de desenvolvimento.
+- Vídeo de até 5 minutos precisa ser gravado pelos integrantes e publicado como não listado no YouTube.
+- O repositório final está em [GitHub](https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-); esta entrega está sendo consolidada na `main`.
+- `ENTREGA_FINAL.txt` ainda precisa receber o link público do APK e do vídeo não listado depois da publicação.
+- Backend, autenticação real, persistência e ESP32/LoRa continuam fora do protótipo.
+- Validar com a equipe os estados vazios/erro em cenários controlados e criar testes automatizados.
 
-## � Plano de ajustes para a Sprint 4
-1. Criar camada de serviços para dados e autenticação
-2. Implementar persistência real e sincronização local
-3. Estruturar rotas de navegação real com React Router
-4. Adicionar testes automatizados de fluxo principal
-5. Melhorar estados de erro, vazio e recuperação de falha
-6. Preparar vídeo e versionar documentação final com entregáveis reais
-7. Definir melhor arquitetura para futuras integrações com sensores e backend
+## ✅ Fechamento da Sprint 4
+
+1. APK Android gerado com Capacitor e validado por instalação e abertura em AVD Android 36.1.
+2. Plano de negócio contextualizado à operação rodoviária, com premissas identificadas como estimativas.
+3. Roteiro de pitch com participação dos quatro integrantes; vídeo real permanece a cargo do grupo.
+4. README consolidado e `.txt` de submissão preparado; falta publicar os links de APK/vídeo.
 
 ---
 
 ## 🚀 Como rodar o projeto
 
 ### Requisitos
-- Node.js
+- Node.js 20 ou superior
 - pnpm
+- JDK 21
+- Android SDK com Android 35 e Build Tools 34 ou superior
 
 ### Comandos
 ```bash
@@ -147,14 +203,34 @@ pnpm install
 pnpm web
 ```
 
-### URL local
-```text
-http://localhost:5174/
+### Gerar APK de avaliação
+
+No Windows PowerShell, configure `JAVA_HOME` para o JDK 21 e `ANDROID_HOME` para a pasta do Android SDK. Exemplo:
+
+```powershell
+$env:JAVA_HOME = "C:\caminho\para\jdk-21"
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+$env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+pnpm install
+pnpm android:apk
 ```
 
-> Observação: a porta 5173 pode estar ocupada em certas máquinas; o projeto usa fallback para 5174 no ambiente local testado.
+O script executa o build web, sincroniza os assets do Capacitor e chama o Gradle. O arquivo resultante fica em `android/app/build/outputs/apk/debug/app-debug.apk`. Não commitar o APK nem chaves de assinatura.
+
+### Instalar em dispositivo Android
+
+Transfira o APK para o aparelho, permita temporariamente a instalação de aplicativos da origem usada para abrir o arquivo e toque em `app-debug.apk`. O Android pode exibir um aviso por ser um APK de depuração. Para distribuição pública/loja, gerar uma variante release com certificado de assinatura protegido e fazer os testes de release necessários; a chave debug deste projeto não serve para publicação.
+
+### Executar versão web
+
+```bash
+pnpm web
+```
+
+O Vite informa a URL e a porta disponíveis ao iniciar.
 
 ---
 
 ## 📌 Conclusão
-O protótipo atual atende ao objetivo principal da Sprint 3 de demonstrar a solução GreenCut de forma funcional e visualmente consistente. O projeto está pronto como prova de conceito de front-end, mas ainda depende de evolução para backend, persistência e documentação de entrega final.
+O Greencut possui um protótipo navegável e um APK de avaliação instalado e aberto em emulador. A proposta de negócio e o vídeo ainda precisam de validação/publicação externa; integração IoT, serviços reais, segurança de produção e ROI exigem piloto com a Motiva. O `.txt` é o único arquivo a enviar como entregável final, depois de preencher os links públicos.

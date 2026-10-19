@@ -47,7 +47,9 @@ export default function Dashboard({ sensors, onSensorClick }: DashboardProps) {
     .sort((a, b) => b.height - a.height)
     .slice(0, 3);
 
-  const summaryLabel = criticalCount > 0
+  const summaryLabel = sensors.length === 0
+    ? 'Nenhum sensor disponível nesta rodovia.'
+    : criticalCount > 0
     ? `${criticalCount} trecho(s) crítico(s) exigem ação imediata.`
     : warningCount > 0
       ? `${warningCount} trecho(s) em atenção precisam acompanhamento.`
@@ -56,10 +58,10 @@ export default function Dashboard({ sensors, onSensorClick }: DashboardProps) {
   return (
     <div className="h-full flex flex-col bg-background">
       <div className="px-4 pt-4">
-        <div className={`rounded-xl border-2 p-3 ${criticalCount > 0 ? 'bg-red-50 border-red-600' : warningCount > 0 ? 'bg-amber-50 border-amber-500' : 'bg-green-50 border-green-600'}`}>
+        <div className={`rounded-xl border-2 p-3 ${sensors.length === 0 ? 'bg-slate-50 border-slate-300' : criticalCount > 0 ? 'bg-red-50 border-red-600' : warningCount > 0 ? 'bg-amber-50 border-amber-500' : 'bg-green-50 border-green-600'}`}>
           <div className="flex items-start gap-3">
-            <div className={`mt-0.5 ${criticalCount > 0 ? 'text-red-600' : warningCount > 0 ? 'text-amber-600' : 'text-green-600'}`}>
-              {criticalCount > 0 ? <AlertTriangle className="w-5 h-5" /> : warningCount > 0 ? <Clock className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />}
+            <div className={`mt-0.5 ${sensors.length === 0 ? 'text-slate-500' : criticalCount > 0 ? 'text-red-600' : warningCount > 0 ? 'text-amber-600' : 'text-green-600'}`}>
+              {sensors.length === 0 ? <MapPin className="w-5 h-5" /> : criticalCount > 0 ? <AlertTriangle className="w-5 h-5" /> : warningCount > 0 ? <Clock className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />}
             </div>
             <div className="flex-1">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">Prioridade de ação</p>
@@ -120,7 +122,15 @@ export default function Dashboard({ sensors, onSensorClick }: DashboardProps) {
       {/* Map Simulation */}
       <div className="flex-1 px-4 pb-4 overflow-hidden">
         <div className="bg-[#E5E3DF] rounded-xl h-full relative overflow-y-auto shadow-inner">
-          {/* Rodovia - representação visual */}
+          {sensors.length === 0 ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+              <MapPin className="w-10 h-10 text-slate-500 mb-3" />
+              <h2 className="font-semibold text-slate-800">Lista de sensores vazia</h2>
+              <p className="mt-1 max-w-sm text-sm text-slate-600">
+                Não há sensores cadastrados para esta rodovia no momento.
+              </p>
+            </div>
+          ) : (
           <div className="absolute inset-0 flex items-center justify-center p-8">
             <div className="w-full max-w-2xl">
               {/* Pista Norte */}
@@ -212,6 +222,7 @@ export default function Dashboard({ sensors, onSensorClick }: DashboardProps) {
               </div>
             </div>
           </div>
+          )}
         </div>
       </div>
 

@@ -21,8 +21,12 @@ export default function ReportScreen({ sensors, occurrences, interventions, onBa
   const warningSensors = sortedSensors.filter(s => s.status === 'warning');
   const normalSensors = sortedSensors.filter(s => s.status === 'normal');
 
-  const avgHeight = sensors.reduce((sum, s) => sum + s.height, 0) / sensors.length;
-  const avgGrowthRate = sensors.reduce((sum, s) => sum + s.growthRate, 0) / sensors.length;
+  const avgHeight = sensors.length > 0
+    ? sensors.reduce((sum, s) => sum + s.height, 0) / sensors.length
+    : undefined;
+  const avgGrowthRate = sensors.length > 0
+    ? sensors.reduce((sum, s) => sum + s.growthRate, 0) / sensors.length
+    : undefined;
 
   return (
     <div className="h-full bg-background flex flex-col overflow-y-auto">
@@ -63,7 +67,7 @@ export default function ReportScreen({ sensors, occurrences, interventions, onBa
 
             <div className="bg-gray-50 rounded-lg p-3">
               <p className="text-xs text-muted-foreground mb-1">Altura Média</p>
-              <p className="text-2xl font-bold text-foreground">{avgHeight.toFixed(1)}cm</p>
+              <p className="text-2xl font-bold text-foreground">{avgHeight === undefined ? '—' : `${avgHeight.toFixed(1)}cm`}</p>
             </div>
 
             <div className="bg-red-50 rounded-lg p-3 border border-red-200">
@@ -82,11 +86,17 @@ export default function ReportScreen({ sensors, occurrences, interventions, onBa
               <span className="text-muted-foreground">Crescimento médio:</span>
               <span className="font-medium flex items-center gap-1">
                 <TrendingUp className="w-4 h-4 text-blue-600" />
-                {avgGrowthRate.toFixed(1)} cm/semana
+                {avgGrowthRate === undefined ? '—' : `${avgGrowthRate.toFixed(1)} cm/semana`}
               </span>
             </div>
           </div>
         </div>
+
+        {sensors.length === 0 && (
+          <div className="rounded-lg border border-slate-300 bg-slate-50 p-4 text-sm text-slate-700">
+            Nenhum sensor disponível para gerar a priorização desta rodovia.
+          </div>
+        )}
 
         {/* Trechos Críticos */}
         {criticalSensors.length > 0 && (

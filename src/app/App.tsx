@@ -3,6 +3,7 @@ import { Bell, MapPin, AlertTriangle, CheckCircle, Clock, Menu, LogOut, FileText
 import { toast } from 'sonner';
 import { Toaster } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import LoginScreen from './components/LoginScreen';
 import RoadwaySelector, { type Highway } from './components/RoadwaySelector';
 import Dashboard from './components/Dashboard';
@@ -49,12 +50,12 @@ export interface Notification {
 }
 
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [userRole, setUserRole] = useState<UserRole>('gestor');
-  const [currentScreen, setCurrentScreen] = useState<'highway-select' | 'dashboard' | 'details' | 'report' | 'operator-work'>('highway-select');
   const [selectedHighway, setSelectedHighway] = useState<Highway | null>(null);
-  const [selectedSensor, setSelectedSensor] = useState<Sensor | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState({ name: 'Mário Silva', role: 'Supervisor de Operações' });
@@ -118,9 +119,29 @@ function App() {
     };
   });
 
+  const routeSegments = location.pathname.split('/').filter(Boolean);
+  const routeHighwayId = routeSegments[0] === 'highways' && routeSegments[1] !== 'undefined'
+    ? routeSegments[1]
+    : undefined;
+  const routeSensors = routeHighwayId ? getSensorsForHighway(routeHighwayId) : sensors;
+  const activeHighway = highways.find((highway) => highway.id === routeHighwayId) ?? selectedHighway;
+  const currentScreen = location.pathname === '/highways'
+    ? 'highway-select'
+    : location.pathname.endsWith('/report')
+      ? 'report'
+      : location.pathname.startsWith('/sensors/')
+        ? 'details'
+        : location.pathname.startsWith('/operator/tasks/')
+          ? 'operator-work'
+          : 'dashboard';
+
   const getSensorById = (sensorId: string): Sensor | undefined => {
     return getAllSensors().find((sensor) => sensor.id === sensorId);
   };
+
+  const routeSensor = routeSegments[0] === 'sensors' || routeSegments[0] === 'operator'
+    ? getSensorById(routeSegments.at(-1) ?? '')
+    : undefined;
 
   const getHighwayIdBySensorId = (sensorId: string): string | undefined => {
     return Object.entries(sensorsByHighwayState).find(([, list]) =>
@@ -181,14 +202,14 @@ function App() {
 
       if (role === 'gestor') {
         setUser({ name: username, role: 'Supervisor de Operações' });
-        setCurrentScreen('highway-select');
+        navigate('/highways');
       } else {
         setUser({ name: username, role: 'Operador de Campo' });
         if (!selectedHighway) {
           setSelectedHighway(highways[0]); // primeira rodovia por padrão apenas se ainda não houver seleção
         }
         setSensors(getAllSensors());
-        setCurrentScreen('dashboard');
+        navigate('/operator/tasks');
       }
 
       toast.success(`Login realizado como ${role === 'gestor' ? 'Gestor' : 'Operador'}!`);
@@ -198,20 +219,18 @@ function App() {
   const handleSelectHighway = (highway: Highway) => {
     setSelectedHighway(highway);
     setSensors(getSensorsForHighway(highway.id));
-    setCurrentScreen('dashboard');
+    navigate(`/highways/${highway.id}`);
     toast.success(`Rodovia selecionada: ${highway.name}`);
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setCurrentScreen('highway-select');
-    setSelectedSensor(null);
+    navigate('/login');
     toast.info('Sessão encerrada');
   };
 
   const handleSensorClick = (sensor: Sensor) => {
-    setSelectedSensor(sensor);
-    setCurrentScreen('details');
+    navigate(`/sensors/${sensor.id}`);
   };
 
   const handleUpdateSensorStatus = (sensorId: string, newStatus: SensorStatus) => {
@@ -328,7 +347,7 @@ function App() {
       ]);
     }
 
-    setCurrentScreen('dashboard');
+    navigate('/operator/tasks');
   };
 
   const handleMarkNotificationRead = (notificationId: string) => {
@@ -452,7 +471,7 @@ function App() {
           <button
             onClick={() => {
               if (userRole === 'gestor' && currentScreen === 'dashboard') {
-                setCurrentScreen('highway-select');
+                navigate('/highways');
                 setSelectedHighway(null);
               }
             }}
@@ -462,7 +481,7 @@ function App() {
             <div className="text-left">
               <h1 className="font-bold leading-tight">Motiva Greencut</h1>
               <p className="text-xs opacity-90">
-                {selectedHighway ? selectedHighway.name : 'Monitoramento Inteligente'}
+                {activeHighway ? activeHighway.name : 'Monitoramento Inteligente'}
               </p>
             </div>
           </button>
@@ -520,7 +539,7 @@ function App() {
           {currentScreen !== 'highway-select' && (
             <button
               onClick={() => {
-                setCurrentScreen('highway-select');
+                navigate('/highways');
                 setShowMenu(false);
               }}
               className="w-full px-4 py-2 text-left hover:bg-accent flex items-center gap-2 text-sm"
@@ -531,7 +550,7 @@ function App() {
           )}
           <button
             onClick={() => {
-              setCurrentScreen('dashboard');
+              navigate(userRole === 'operador' ? '/operator/tasks' : `/highways/${activeHighway?.id ?? highways[0].id}`);
               setShowMenu(false);
             }}
             className="w-full px-4 py-2 text-left hover:bg-accent flex items-center gap-2 text-sm"
@@ -541,7 +560,7 @@ function App() {
           </button>
           <button
             onClick={() => {
-              setCurrentScreen('report');
+              navigate(`/highways/${activeHighway?.id ?? highways[0].id}/report`);
               setShowMenu(false);
             }}
             className="w-full px-4 py-2 text-left hover:bg-accent flex items-center gap-2 text-sm"
@@ -569,7 +588,7 @@ function App() {
           onClose={() => setShowNotifications(false)}
           onMarkRead={handleMarkNotificationRead}
           onNotificationClick={(sensorId) => {
-            const sensor = sensors.find(s => s.id === sensorId);
+            const sensor = getSensorById(sensorId);
             if (sensor) {
               handleSensorClick(sensor);
               setShowNotifications(false);
@@ -578,114 +597,47 @@ function App() {
         />
       )}
 
-      {/* Main Content */}
       <main className="flex-1 overflow-hidden">
-        <AnimatePresence mode="wait">
-          {currentScreen === 'highway-select' && userRole === 'gestor' && (
-            <motion.div
-              key="highway-select"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="h-full"
-            >
-              <RoadwaySelector
-                highways={displayHighways}
-                onSelectHighway={handleSelectHighway}
-              />
-            </motion.div>
-          )}
-
-          {currentScreen === 'dashboard' && userRole === 'gestor' && (
-            <motion.div
-              key="dashboard"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
-            >
-              <Dashboard
-                sensors={sensors}
-                onSensorClick={handleSensorClick}
-              />
-            </motion.div>
-          )}
-
-          {currentScreen === 'dashboard' && userRole === 'operador' && (
-            <motion.div
-              key="operator-dashboard"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
-            >
-              <OperatorDashboard
-                sensors={sensors}
-                operatorName={user.name}
-                onWorkClick={(sensor) => {
-                  setSelectedSensor(sensor);
-                  setCurrentScreen('operator-work');
-                }}
-              />
-            </motion.div>
-          )}
-
-          {currentScreen === 'details' && selectedSensor && (
-            <motion.div
-              key="details"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
-            >
-              <SensorDetails
-                sensor={selectedSensor}
-                onBack={() => setCurrentScreen('dashboard')}
-                onUpdateStatus={handleUpdateSensorStatus}
-              />
-            </motion.div>
-          )}
-
-          {currentScreen === 'report' && (
-            <motion.div
-              key="report"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
-            >
-              <ReportScreen
-                sensors={sensors}
-                occurrences={occurrences}
-                interventions={interventions}
-                onBack={() => setCurrentScreen('dashboard')}
-                onSensorClick={handleSensorClick}
-              />
-            </motion.div>
-          )}
-
-          {currentScreen === 'operator-work' && selectedSensor && (
-            <motion.div
-              key="operator-work"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
-            >
-              <OperatorWorkScreen
-                sensor={selectedSensor}
-                onBack={() => setCurrentScreen('dashboard')}
-                onComplete={handleWorkCompletion}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <Routes>
+          <Route path="/highways" element={(
+            <RoadwaySelector highways={displayHighways} onSelectHighway={handleSelectHighway} />
+          )} />
+          <Route path="/highways/:highwayId" element={(
+            <Dashboard sensors={routeSensors} onSensorClick={handleSensorClick} />
+          )} />
+          <Route path="/highways/:highwayId/report" element={(
+            <ReportScreen
+              sensors={routeSensors}
+              occurrences={occurrences}
+              interventions={interventions}
+              onBack={() => navigate(`/highways/${activeHighway?.id ?? highways[0].id}`)}
+              onSensorClick={handleSensorClick}
+            />
+          )} />
+          <Route path="/sensors/:sensorId" element={routeSensor ? (
+            <SensorDetails
+              sensor={routeSensor}
+              onBack={() => navigate(userRole === 'operador' ? '/operator/tasks' : `/highways/${activeHighway?.id ?? highways[0].id}`)}
+              onUpdateStatus={handleUpdateSensorStatus}
+            />
+          ) : <Navigate to={userRole === 'operador' ? '/operator/tasks' : '/highways'} replace />} />
+          <Route path="/operator/tasks" element={(
+            <OperatorDashboard
+              sensors={sensors}
+              operatorName={user.name}
+              onWorkClick={(sensor) => navigate(`/operator/tasks/${sensor.id}`)}
+            />
+          )} />
+          <Route path="/operator/tasks/:sensorId" element={routeSensor ? (
+            <OperatorWorkScreen
+              sensor={routeSensor}
+              onBack={() => navigate('/operator/tasks')}
+              onComplete={handleWorkCompletion}
+            />
+          ) : <Navigate to="/operator/tasks" replace />} />
+          <Route path="/login" element={null} />
+          <Route path="*" element={<Navigate to={userRole === 'operador' ? '/operator/tasks' : '/highways'} replace />} />
+        </Routes>
       </main>
             </div>
           </motion.div>
