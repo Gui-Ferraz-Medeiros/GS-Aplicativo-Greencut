@@ -43,7 +43,7 @@ O Motiva Greencut organiza a priorização de roçada por rodovia e trecho. O ge
 | Dados mockados | Concluído | Cobertura realista para protótipo |
 | APK Android | Gerado e testado no emulador | Build debug assinada com chave de desenvolvimento; não é release de loja |
 | Plano de negócio | Elaborado | Premissas de piloto e faixas de custo precisam ser validadas com a Motiva e fornecedores |
-| Vídeo de pitch | Pendente | Gravação deve mostrar os integrantes e o app no dispositivo; roteiro em `docs/ROTEIRO_PITCH.md` |
+| Vídeo de pitch | Pendente | Gravação real pelos integrantes, com app instalado e demonstração no dispositivo; sem narração automatizada |
 | Estados de erro e vazio | Implementado | Listas vazias têm mensagens próprias; erros de renderização permitem recarregar a aplicação |
 | Refinamento de UX visual | Concluído | Personalização da identidade visual, microinterações e melhor onboarding |
 | Integração com APIs reais | Ausente | Ainda não existe backend ou integração externa |
@@ -72,7 +72,6 @@ O Motiva Greencut organiza a priorização de roçada por rodovia e trecho. O ge
 - src/mocks/mockData.ts — dados simulados
 - capacitor.config.json e android/ — ponte Capacitor e projeto nativo
 - docs/PLANO_DE_NEGOCIO.md — plano, personas, custos, riscos e indicadores
-- docs/ROTEIRO_PITCH.md — pauta de vídeo de até 5 minutos
 - ENTREGA_FINAL.txt — nomes/RMs e campos dos três links exigidos
 
 O protótipo é front-end e mantém os dados em memória usando mocks. As telas principais usam rotas de browser: `/highways`, `/highways/:highwayId`, `/highways/:highwayId/report`, `/sensors/:sensorId`, `/operator/tasks` e `/operator/tasks/:sensorId`. Ainda não há backend, persistência ou conexão real com sensores IoT.
@@ -103,7 +102,7 @@ O protótipo é front-end e mantém os dados em memória usando mocks. As telas 
 
 **Receita proposta:** implantação e treinamento pagos, seguidos de serviço gerenciado anual cobrado por quilômetro monitorado e densidade de sensores, com integrações e SLA opcionais.
 
-**Hipótese financeira:** piloto de 100 km e cerca de 50 pontos. Implantação estimada em R$ 94,5 mil–174 mil; operação em R$ 14 mil–27 mil/mês. Faixa de preço para teste: R$ 22 mil–36 mil/mês, além da implantação. São hipóteses de planejamento, não cotações nem proposta aprovada; o arquivo do plano detalha premissas, riscos e fórmula de ROI.
+**Base factual e custos:** o release 2T26 da Motiva reporta OPEX caixa/receita líquida ajustada LTM de 34,1% (-3,7 p.p. contra 2T25), CAPEX consolidado de R$ 1,831 bi no trimestre e crescimento comparável de tráfego rodoviário de 3,8% (2,3% sem o efeito do free flow da RMSP). Esses indicadores contextualizam a busca por eficiência, mas não representam verba do Greencut. O piloto deve usar cotações de hardware e custos reais da concessão; o plano define fórmulas auditáveis para CAPEX, OPEX, preço e ROI, sem estimativas sem fonte.
 
 **Diferenciais e impacto a medir:** priorização por severidade, fluxo do alerta à tarefa e registro de alturas antes/depois. Medir custo por km, proporção de roçadas reativas, tempo de atendimento, disponibilidade e falsos alertas. Não há redução de custo ou impacto de segurança já comprovados.
 
@@ -173,10 +172,10 @@ Os seis fluxos principais abaixo foram validados manualmente no ambiente local c
 
 ## ⚠️ Pendências para publicação
 
-- APK público ainda precisa ser publicado; o APK local é debug e usa assinatura de desenvolvimento.
+- APK v1.0.0 já está publicado na Release; é debug e usa assinatura de desenvolvimento, não uma build para Play Store.
 - Vídeo de até 5 minutos precisa ser gravado pelos integrantes e publicado como não listado no YouTube.
-- O repositório final está em [GitHub](https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-); esta entrega está sendo consolidada na `main`.
-- `ENTREGA_FINAL.txt` ainda precisa receber o link público do APK e do vídeo não listado depois da publicação.
+- O link do repositório e o link público do APK já estão em `ENTREGA_FINAL.txt`; falta preencher o link do vídeo não listado.
+- Após a reescrita do histórico, integrantes com clones antigos devem clonar novamente `main` antes de contribuir.
 - Backend, autenticação real, persistência e ESP32/LoRa continuam fora do protótipo.
 - Validar com a equipe os estados vazios/erro em cenários controlados e criar testes automatizados.
 
@@ -185,7 +184,7 @@ Os seis fluxos principais abaixo foram validados manualmente no ambiente local c
 1. APK Android gerado com Capacitor e validado por instalação e abertura em AVD Android 36.1.
 2. Plano de negócio contextualizado à operação rodoviária, com premissas identificadas como estimativas.
 3. Roteiro de pitch com participação dos quatro integrantes; vídeo real permanece a cargo do grupo.
-4. README consolidado e `.txt` de submissão preparado; falta publicar os links de APK/vídeo.
+4. README consolidado e `.txt` de submissão preparado; falta publicar e inserir o link do vídeo.
 
 ---
 
