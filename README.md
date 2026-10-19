@@ -90,7 +90,7 @@ O protótipo é front-end e mantém os dados em memória usando mocks. As telas 
 ## 📦 APK e publicação
 
 - **APK de avaliação local:** [app-debug.apk](android/app/build/outputs/apk/debug/app-debug.apk)
-- **Download público:** [APK v1.0.0](https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-/releases/download/untagged-f8b5bba7b5e8ff91f32b/Motiva-Greencut-1.0.0.apk) · [página da Release](https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-/releases/tag/v1.0.0)
+- **Download público:** [APK v1.0.0](https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-/releases/download/v1.0.0/Motiva-Greencut-1.0.0.apk) · [página da Release](https://github.com/Gui-Ferraz-Medeiros/GS-Aplicativo-Greencut-BETA-/releases/tag/v1.0.0)
 - **Tipo:** APK debug, assinado pela chave de desenvolvimento do Android. Instalável para avaliação, mas não assinado para distribuição na Play Store.
 - **Vídeo no YouTube (não listado):** pendente de gravação real pelo grupo. Usar o roteiro em `docs/ROTEIRO_PITCH.md` e incluir o link depois da publicação.
 - **Arquivo de submissão:** `ENTREGA_FINAL.txt`; substituir os três campos `PREENCHER` antes do envio.
